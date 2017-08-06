@@ -17,7 +17,7 @@ let assertInput = function(asserts, data) {
 		}
 	});
 
-	if (Object.keys(fails).length) {
+	if (fails.length) {
 		return Promise.reject(fails);
 	}
 
@@ -29,7 +29,7 @@ const validateSingleInput = (validators, data) => {
 	// and return an error if it failed...
 	if (!Array.isArray(validators)) {
 		if (!validators.validate(data)) {
-			return validators.failText(data);
+			return getFailText(validators, data);
 		}
 	}
 	// ...otherwise, recursivly go into the array of validators and check them.
@@ -42,5 +42,12 @@ const validateSingleInput = (validators, data) => {
 		}
 	}
 };
+
+function getFailText(validator, data) {
+	if (typeof validator.failText === 'function') {
+		return validator.failText(data);
+	}
+	return validator.failText;
+}
 
 module.exports = Object.assign(assertInput, validators);
