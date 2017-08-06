@@ -59,15 +59,15 @@ Validators
 ----
 #### Numbers
 * isNumber
-* min
-* max
-* minMax
+* minNumber(min)
+* maxNumber(max)
+* minMaxNumber(min, max)
 
 #### Strings
 * isString
-* minStringLength
-* maxStringLength
-* minMaxStringLength
+* minStringLength(min)
+* maxStringLength(max)
+* minMaxStringLength(min, max)
 
 *More validators coming soon*
 

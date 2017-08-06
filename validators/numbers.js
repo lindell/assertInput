@@ -4,20 +4,20 @@ const isNumber = {
 };
 
 // Check minumum string length without checking if data is string
-const pureMin = (min) => ({
+const pureMinNumber = (min) => ({
 	validate: (data) => data >= min,
 	failText: `must be at least ${min}.`,
 });
-const min = (min) => [isNumber, pureMin(min)];
+const minNumber = (min) => [isNumber, pureMin(min)];
 
 // Check maximum string length without checking if data is string
-const pureMax = (max) => ({
+const pureMaxNumber = (max) => ({
 	validate: (data) => data <= max,
 	failText: `must be at most ${max}.`,
 });
-const max = (max) => [isNumber, pureMax(max)];
+const maxNumber = (max) => [isNumber, pureMax(max)];
 
-const minMax = (min, max) => [
+const minMaxNumber = (min, max) => [
 	isNumber,
 	pureMin(min),
 	pureMax(max),
@@ -25,7 +25,7 @@ const minMax = (min, max) => [
 
 module.exports = {
 	isNumber,
-	min,
-	max,
-	minMax,
+	minNumber,
+	maxNumber,
+	minMaxNumber,
 }
