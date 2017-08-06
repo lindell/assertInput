@@ -81,7 +81,7 @@ const assertInput = require('./index');
 // Create the validator
 let hexColorValidator = {
 	validate: (data) => /^#?([a-f0-9]{6}|[a-f0-9]{3})$/.test(data),
-	failTest: `must be a hex color.`
+	failText: `must be a hex color.`
 };
 // Combine it with isString to first verify that the data is a string
 hexColorValidator = [assertInput.isString, hexColorValidator];
