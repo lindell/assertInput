@@ -1,53 +1,56 @@
 const validators = require('./validators');
+const ValidationError = require('./error');
 
-let assertInput = function(asserts, data) {
-	const assertKeys = Object.keys(asserts);
-	let returns = {};
-	let fails = [];
+function assertInput(asserts, data) {
+	const { returns, fails } = validate(asserts, data);
 
-	assertKeys.forEach(assertKey => {
-		const validator = asserts[assertKey];
-		const errorMessage = validateSingleInput(validator, data[assertKey]);
-
-		if (typeof errorMessage !== 'undefined') {
-			fails.push(`${assertKey} ${errorMessage}`);
-		}
-		else {
-			returns[assertKey] = data[assertKey];
-		}
-	});
-
-	if (fails.length) {
-		return Promise.reject(fails);
+	if (Object.keys(fails).length > 0) {
+		return Promise.reject(new ValidationError(fails));
 	}
 
 	return Promise.resolve(returns);
-};
+}
 
-const validateSingleInput = (validators, data) => {
-	// If 'validators' is accually a single validator, validate the data
-	// and return an error if it failed...
-	if (!Array.isArray(validators)) {
-		if (!validators.validate(data)) {
-			return getFailText(validators, data);
+function validate(asserts, data) {
+	const assertKeys = Object.keys(asserts);
+	let returns = {};
+	let fails = {};
+
+	assertKeys.forEach(assertKey => {
+		const validator = asserts[assertKey];
+		if (typeof validator === 'function' || Array.isArray(validator)) {
+			const error = validateSingle(validator, data[assertKey]);
+
+			if (error) {
+				fails[assertKey] = error;
+			} else {
+				returns[assertKey] = data[assertKey];
+			}
+		} else {
+			const subReturn = validate(validator, data[assertKey]);
+			returns[assertKey] = subReturn.return;
+			fails[assertKey] = subReturn.fails;
 		}
-	}
-	// ...otherwise, recursivly go into the array of validators and check them.
-	else {
-		for (let validator of validators) {
-			const failMessage = validateSingleInput(validator, data);
-			if (failMessage) {
-				return failMessage;
+	});
+
+	return { returns, fails };
+}
+
+function validateSingle(validator, data) {
+	if (typeof validator === 'function') {
+		const error = validator(data);
+
+		if (typeof error !== 'undefined' && error !== false) {
+			return error;
+		}
+	} else if (Array.isArray(validator)) {
+		for (const v of validator) {
+			const error = v(data);
+			if (typeof error !== 'undefined' && error !== false) {
+				return error;
 			}
 		}
 	}
-};
-
-function getFailText(validator, data) {
-	if (typeof validator.failText === 'function') {
-		return validator.failText(data);
-	}
-	return validator.failText;
 }
 
 module.exports = Object.assign(assertInput, validators);

@@ -1,5 +1,5 @@
 {
-  "name": "assert-input",
+  "name": "valo",
   "version": "0.1.0",
   "description": "Validate user input data and generate a promise.",
   "main": "index.js",
