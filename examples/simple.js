@@ -1,4 +1,4 @@
-const assertInput = require('../');
+const valo = require('../');
  
 const data = {
     name: 'Foo Bar',
@@ -6,9 +6,9 @@ const data = {
     someOtherField: 'some other data'
 };
  
-assertInput({
-    name: assertInput.minStringLength(40),
-    someOtherField: assertInput.minStringLength(3),
+valo({
+    name: valo.minStringLength(40),
+    someOtherField: valo.minStringLength(3),
 }, data)
 .then(console.log)
 .catch(console.log);

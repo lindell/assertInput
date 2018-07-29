@@ -53,4 +53,7 @@ function validateSingle(validator, data) {
 	}
 }
 
-module.exports = Object.assign(assertInput, validators);
+module.exports = Object.assign(assertInput, {
+	...validators,
+	ValidationError,
+});
